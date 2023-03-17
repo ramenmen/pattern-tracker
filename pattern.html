@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="styles/style.css" rel="stylesheet" />
+    <script src="scripts/main.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <title>My App</title>
+  </head>
+  <body>
+    <header>
+      <h1>My Pattern Tracker</h1>
+      <nav>
+        <ul>
+          <li class="current-page"><a href="patterns-list.html">&lt; My Patterns</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div  class="top-button">
+      <span class="top-button-section" id="add-mode">
+        <button type="button" id="stop-button">Stop Adding</button>
+      </span>
+      <span class="top-button-section" id="read-mode">
+          <label for="stitch-count-check">
+            Show Ending Stitch Counts
+            <input type="checkbox" id="stitch-count-check" checked/>
+          </label>
+          <button type="button" class="circle-button" id="minus-button">-</button>
+          <button type="button" class="circle-button" id="plus-button">+</button>
+          <button type="button" id="edit-button">Edit Mode</button>
+      </span>
+      <span class="top-button-section" id="edit-mode">
+        <button type="button" id="save-button">Save Changes</button>
+        <button type="button" id="discard-button">Discard Changes</button>
+      </span>
+    </div>
+    <div id="pattern-viewer"></div>
+      <section class="pattern-container">
+      </section>
+    </div>
+    <footer>
+      <p>My Pattern Tracker is made by CY :)</p>
+    </footer>
+  </body>
+</html>

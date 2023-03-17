@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="styles/style.css" rel="stylesheet" />
+    <script src="scripts/login-register.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <title>My App</title>
+  </head>
+  <body>
+    <header>
+      <h1>My Pattern Tracker</h1>
+    </header>
+    <h1>Register</h1>
+    <form class="login">
+    <!-- <form class="login" action="http://localhost:8089/register" method="post"> -->
+      <label for="username"> Username: <input type="text" id='username' name="username" placeholder="yarnluvr123" value="123"/></label>
+      
+      <label for="password"> Password:
+        <input type="password" id='password' name="password" placeholder="..." value = '456'/>
+      </label>
+      <div id="error-message" style="display: none">
+        
+      </div>
+      <button type="button" id="register-button">Register</button>
+      <p>
+        <a href="login.html">Login</a> instead
+      </p>
+    </form>
+    <footer>
+      <p>My Pattern Tracker is made by CY :)</p>
+    </footer>
+  </body>
+</html>

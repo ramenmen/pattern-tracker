@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="styles/style.css" rel="stylesheet" />
+    <script src="scripts/login-register.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <!-- Google Recaptcha API CDN -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title>My App</title>
+  </head>
+  <body>
+    <header>
+      <h1>My Pattern Tracker</h1>
+    </header>
+    <h1>Login</h1>
+    <form class="login">
+    <!-- <form class="login" action="http://localhost:8089/register" method="post"> -->
+      <label for="username"> Username: <input type="text" id='username' name="username" placeholder="yarnluvr123" value="123"/></label>
+      
+      <label for="password"> Password:
+        <input type="password" id='password' name="password" placeholder="..." value = '456'/>
+      </label>
+      <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onRecaptchaSuccess"
+        data-expired-callback="onRecaptchaResponseExpiry" data-error-callback="onRecaptchaError">Captcha
+      </div>
+      <!-- Recaptcha Error -->
+      <div id="error-message" style="display: none">
+        
+      </div>
+
+      <button type="button" id="login-button">Login</button>
+      <p>
+        <a href="register.html">Register</a> an account instead
+      </p>
+    </form>
+
+    
+    
+    <footer>
+      <p>My Pattern Tracker is made by CY :)</p>
+    </footer>
+  </body>
+</html>

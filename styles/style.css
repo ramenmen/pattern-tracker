@@ -1,0 +1,338 @@
+@font-face {
+    font-family: "HeydingsControlsRegular";
+    src: url("fonts/heydings_controls-webfont.eot");
+    src: url("fonts/heydings_controls-webfont.eot?#iefix") format("embedded-opentype"),
+        url("fonts/heydings_controls-webfont.woff") format("woff"),
+        url("fonts/heydings_controls.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --row-height:2.5em;
+    --border-radius:5px;
+}
+
+html, body {margin: 0;}
+
+body {
+    padding:20px;
+    margin:0px;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+header{
+    background-color: white;
+    padding:10px 0px
+}
+
+h1{
+    --header-height:2.5em;
+    margin:0px;
+    color:sienna;
+    text-align: center;
+    width:100%;
+    height:var(--header-height);
+    line-height: var(--header-height);
+}
+
+nav ul {
+    margin:0;
+    height:2.5em;
+    line-height: 2.5em;
+    list-style: none;
+    display: flex;
+    column-gap:1em;
+}
+
+div.g-recaptcha{
+    display:flex;
+    justify-content: center;
+    margin: 20px;
+    left: 50%;
+    /* width:inherit; */
+}
+
+div.top-button {
+    margin:0;
+    list-style: none;
+    column-gap:1em;
+
+    z-index:999;
+    position: sticky;
+    top:0;
+    text-align: right;
+    padding:0.5em;
+    height:3em;
+    font-size:1em;
+}
+
+nav a {
+    font-size: 1.5em;
+    text-decoration: none;
+    padding:10px;
+    color:white;
+}
+
+nav li.current-page {
+    background-color:sienna;
+}
+
+nav li{
+    background-color:burlywood
+}
+/* 
+.top-button{
+    z-index:999;
+    position: sticky;
+    top:0;
+    text-align: right;
+    padding:0.5em;
+    height:5em;
+    
+} */
+
+button{
+    border:none;
+    color:white;
+    background-color: sienna;
+    height:100%;
+    margin:0;
+    cursor: pointer;
+}
+
+p.symbol-button{
+    font-family: HeydingsControlsRegular;
+    font-size:2em;
+    padding:0;
+    
+    cursor:pointer;
+    margin:0;
+    margin-left:20px;
+}
+
+.header-with-buttons{
+    display:flex;
+}
+
+.pattern-row>p.symbol-button {
+    line-height: 1em;}
+
+
+.pattern-row>p.end-button{
+    margin-left: 16px;
+    margin-right:8px;
+    cursor: pointer;
+}
+
+.circle-button{
+    /* height:100%; */
+    /* line-height:0.75em;*/
+    width:4em;
+    /* font-size:2em; */
+    /* font-size:4em; */
+}
+
+button:hover{
+    background-color:peru;
+}
+
+button:active{
+    background-color: sienna;
+}
+
+button:disabled {
+    background-color: blanchedalmond;
+    color:peru;
+}
+
+.pattern-container{
+    padding:20px;
+}
+
+.login{
+    text-align: center;
+    font-size: 1.5em;;
+}
+
+.login button{
+    height:2em;
+}
+.login input {
+    height:1.5em;
+}
+
+.login label {
+    display: block;
+    margin:10px;
+}
+
+ol {
+    width:100%;
+    padding:0px;
+    /* height:80vh; */
+    /* overflow:auto; */
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size:inherit;
+}
+
+.row-button{
+    width:100%;
+    height:100%;
+}
+
+.pattern-row#add-pattern-row{
+    padding:0px;
+}
+
+input {
+    border-radius: var(--border-radius);
+    box-sizing:border-box;
+    padding:0px 0.5em;
+}
+
+.pattern-name{
+    outline:none;
+    height:2em;
+    width:100%;
+    font-size:2em;
+    line-height: 2em;
+    margin:0px;
+    color:peru;
+    text-align:left;
+}
+
+input.pattern-name {
+    border:3px solid rgba(131, 54, 7, 0.863);
+    /* text-align: left; */
+}
+
+h2.pattern-name {
+    border:none;
+    outline:none;
+    /* text-align: center; */
+    display:inline;
+    flex: 1;
+}
+
+.pattern-row{
+    font-size: 20px;
+    box-sizing:border-box;
+    height:3em;
+    margin:0em;
+    
+    padding:0.5em;
+    display: flex;
+    color:rgb(100, 46, 8);
+}
+
+.pattern-row.hide{
+    display: none;
+}
+
+button.rowLabel {
+    text-align: left;
+    background-color: inherit;
+    color:inherit;
+    width:5em;
+}
+
+button.rowLabel:disable{
+    background-color: inherit;
+    color:inherit;
+}
+
+.pattern-row-content {
+    flex: 1;
+}
+
+.pattern-row > p, .pattern-row > input,
+.pattern-row>a {
+    border:none;
+    outline:none;
+    color:inherit;
+    margin:0;
+    line-height:2em;
+}
+
+.pattern-row > .pattern-row-stitch-count {
+    margin-left:0.5em;
+    width:4em;
+}
+
+.hidden {
+    display:none;
+}
+
+.pattern-row:nth-of-type(odd) {
+    background-color: burlywood;
+}
+
+.pattern-row:nth-of-type(even) {
+    background-color:antiquewhite;
+}
+
+.pattern-row:nth-of-type(odd).faded, .pattern-row:nth-of-type(even).faded {
+    opacity:0.5;
+}
+/* 
+p.pattern-row-content{
+    background-color: inherit;
+} */
+
+a.pattern-row-content{
+    appearance: none;
+    text-decoration: none;
+    color: inherit;
+}
+
+.pattern-row>input {
+    background-color: rgba(142, 80, 29, 0.288);
+}
+
+.pattern-row>input:focus {
+    background-color: rgba(121, 55, 0, 0.411);
+}
+
+input[type='checkbox'] {
+    cursor: pointer;
+    appearance: none;
+    position: relative;
+    width: 2em;
+    height: 2em;
+    border: 1px solid gray;
+    /* Adjusts the position of the checkboxes on the text baseline */
+    vertical-align: -15px;
+    background-color: white;
+    /* Set here so that Windows' High-Contrast Mode can override */
+    color: green;
+
+}
+
+input[type="checkbox"]::before {
+    content: "✔";
+    position: absolute;
+    font-size: 2em;
+    right: 2px;
+    top: -7px;
+    visibility: hidden;
+  }
+  
+  input[type="checkbox"]:checked::before {
+    /* Use `visibility` instead of `display` to avoid recalculating layout */
+    visibility: visible;
+  }
+  
+  input[type="checkbox"]:disabled {
+    border-color: black;
+    background: #ddd;
+    color: gray;
+  }
+
+  

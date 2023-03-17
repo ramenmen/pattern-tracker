@@ -1,0 +1,73 @@
+can do localhost or the cloud one. 
+and add user auth, can add viewing permissions for each pattern for each user.
+could do captcha for user authentication.
+
+object reference
+pattern {
+    name
+    finished
+    currentRow
+    rows[]
+}
+
+row {
+    description
+    ending st no.
+}
+
+todo:
+TODAY:
+
+** i should store a version of patternObject thats before i entered edit mode, 
+and a version thats synced with the deletions and reorderings that i made.
+> the list of elements should be retrieved at the moment i click save
+> so that if i deleted or reordered, that will be reflected. 
+> so whatever is reflected in the elements when i click save is whatever is sent to the server.
+
+> so i think i shouldn't save the elements in a list
+> for save new row i will turn off save IDKDKKKKK
+
+
+store all my patterns on mongo db, each user has a list of patterns by id (?)
+CRUD for patterns and rows on mongodb
+C - done, its just adding name
+R - done
+U - i think i will only allow edits in indiv view mode
+D - done
+
+pattern ROW
+C - the behaviour of add rows is weird (because saving will automatically trigger the view form)
+R - done
+U - edit rows and current row works
+D
+
+U: 
+- new row
+- edit existing rows
+- edit pattern current row (finished status calculate in server :)
+
+D: delete row
+
+later:
+client side input checking for login/register
+
+upload file and autofill new pattern :)
+
+** i want the pencil to lead to pattern view, edit mode. screaming crying :(
+
+** if you delete a row, all the row numbers that you saved in the various attributes will be wrong. then how girl
+
+in edit mode:
+enter in added row means new row or save pattern and exit? (i think it means new row)
+
+to test:
+addnewrow in edit mode
+
+
+ideas:
+figure out how to set user view permissions
+settings: auto propagate st count, enter to save or to next row, etc blablabla
+reorder rows
+either drag ONLY or edit row number AND press arrow to up down
+
+

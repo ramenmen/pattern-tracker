@@ -18,6 +18,12 @@ row {
 todo:
 TODAY:
 
+finish CRUD pattern and row using below ideas. 
+reorder (?) just by pressing buttons?
+
+the enter when adding new row is wrong. fix that
+also the stuff thats under later needs to be done.
+
 ** i should store a version of patternObject thats before i entered edit mode, 
 and a version thats synced with the deletions and reorderings that i made.
 > the list of elements should be retrieved at the moment i click save

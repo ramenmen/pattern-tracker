@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link href="styles/style.css" rel="stylesheet" />
-    <script src="scripts/patterns-list.js" defer></script>
+    <script src="scripts/upload.js" defer></script>
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
     <title>My App</title>
   </head>
@@ -13,22 +13,27 @@
       <h1>My Pattern Tracker</h1>
       <nav>
         <ul>
-          <li class="current-page"><a href="patterns-list.html">My Patterns</a></li>
+          <li><a href="patterns-list.html">My Patterns</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </nav>
     </header>
     <div id="pattern-viewer"></div>
       <section class="pattern-container">
-        <div class="header-with-buttons">
-        <h2 class="pattern-name">My Patterns</h2> 
-        <button class="header-button" id="upload-button">Upload pattern from file</button>
-        <button class="symbol-button" id="edit-button">L</button>
+        <h2 class="pattern-name">My Patterns</h2>
+        <div>
+          <form>
+            <label for="pattern-file">Choose a csv pattern file to upload:
+          <input type="file" id="pattern-file" name="pattern-file" accept="text/csv, text/plain"></label>
+          <button class="header-button" type="button" id="upload-button">Upload</button>
+        </form>
         </div>
+        
+        
+        
+
       </section>
-      
     </div>
-    
     <footer>
       <p>My Pattern Tracker is made by CY :)</p>
     </footer>

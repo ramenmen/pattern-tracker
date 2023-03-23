@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:crypto/crypto.dart';
 import 'package:collection/collection.dart';
+import 'package:csv/csv.dart';
 
 late final DbCollection users;
 late final DbCollection userSessions;
@@ -13,7 +14,8 @@ late final DbCollection patterns;
 
 void main() async {
   // Connect to our Mongo database
-  Db db = Db('mongodb://localhost:27017/test');
+  Db db = Db(
+      'mongodb://chuyue:chuyue123@ac-cntswxq-shard-00-00.hzmt7cs.mongodb.net:27017,ac-cntswxq-shard-00-01.hzmt7cs.mongodb.net:27017,ac-cntswxq-shard-00-02.hzmt7cs.mongodb.net:27017/?ssl=true&replicaSet=atlas-7jtlrp-shard-0&authSource=admin&retryWrites=true&w=majority'); //'mongodb+srv://chuyue:chuyue123@cluster0.hzmt7cs.mongodb.net/test');
   await db.open();
   users = db.collection('users');
   userSessions = db.collection('userSessions');
@@ -21,8 +23,8 @@ void main() async {
   print('Connected to database!');
 
   // Create our server connection
-  const port = 8089;
-  var server = await HttpServer.bind('localhost', port);
+  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  var server = await HttpServer.bind(InternetAddress.anyIPv4, port);
 
   server.listen((HttpRequest request) async {
     var response = request.response;
@@ -125,17 +127,11 @@ _handlePost(HttpRequest request) async {
         throw ArgumentError('Wrong user or password');
       }
     }
-  } //else if (path == '/pattern') {
-  //   //i want to specify if its create or update or delete within the request
-  //   //so the actual json document should be
-  //   var content = await utf8.decoder.bind(request).join();
-  //   var data = json.decode(content);
-  //   await patterns.insertOne(data);
-  // }
-  else if (path == '/pattern-list') {
+  } else if (path == '/pattern-list') {
     var isLoggedIn = await _isLoggedIn(request);
     if (!isLoggedIn) {
-      await request.response.redirect(Uri.parse('/login.html'));
+      response.write(json.encode({'redirect': '/login.html'}));
+      await request.response.close();
       return;
     }
 
@@ -154,8 +150,8 @@ _handlePost(HttpRequest request) async {
       }
       if (document['currentRow'] != null) {
         updateObject['currentRow'] = document['currentRow'];
-        updateObject['finished'] =
-            itemToUpdate['rows'].length < document['currentRow'];
+        updateObject['finished'] = document['rows'].length > 0 &&
+            document['rows'].length < document['currentRow'];
       }
       if (document['rows'] != null) {
         updateObject['rows'] = document['rows'];
@@ -173,6 +169,41 @@ _handlePost(HttpRequest request) async {
       response.write(json.encode(result.document));
     }
     await response.close();
+  } else if (path == '/upload-file') {
+    var isLoggedIn = await _isLoggedIn(request);
+    if (!isLoggedIn) {
+      response.write(json.encode({'redirect': '/login.html'}));
+      await request.response.close();
+      return;
+    }
+
+    var username = await _getUserName(request);
+
+    Map<String, dynamic> document = {};
+    document['owner'] = username;
+    document['finished'] = false;
+    document['currentRow'] = 1;
+    document['rows'] = [];
+    document['name'] = request.uri.queryParameters['name'];
+
+    var content = utf8.decoder.bind(request);
+    var myList = await CsvToListConverter().bind(content).toList();
+    for (int i = 0; i < myList.length; i++) {
+      var row = myList[i];
+      var newRow = {};
+      newRow['desc'] = row[0];
+      newRow['stCount'] = row[1];
+      document['rows'].add(newRow);
+    }
+
+    var result = await patterns.insertOne(document);
+    if (result.document != null) {
+      var idObject = result.document!['_id'];
+      var id = (idObject! as ObjectId).id.hexString;
+      response.write(json.encode({'redirect': '/pattern.html?id=$id'}));
+    }
+    await response.close();
+    return;
   }
 }
 
@@ -269,7 +300,7 @@ _handleGet(HttpRequest request) async {
   }
 
   //serving an actual file
-  File file = new File(_basePath + path);
+  File file = File(_basePath + path);
   var found = await file.exists();
   if (found) {
     //get content type

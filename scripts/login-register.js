@@ -33,7 +33,7 @@ if (submitBtn) {
 }
 
 function registerUser() {
-    fetch('http://localhost:8089/register', {
+    fetch('/register', {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -58,7 +58,7 @@ function loginUser() {
     if (!isRecaptchaValidated) {
         displayErrorMessage('Please fill in captcha!');
     } else {
-        fetch('http://localhost:8089/login', {
+        fetch('/login', {
             method: 'POST',
             credentials: "include",
             headers: {

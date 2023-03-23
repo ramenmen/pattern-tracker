@@ -1,9 +1,13 @@
 @font-face {
     font-family: "HeydingsControlsRegular";
-    src: url("fonts/heydings_controls-webfont.eot");
-    src: url("fonts/heydings_controls-webfont.eot?#iefix") format("embedded-opentype"),
-        url("fonts/heydings_controls-webfont.woff") format("woff"),
-        url("fonts/heydings_controls.ttf") format("truetype");
+    src: url("fonts/heydings_controls.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PizzaDudePointers";
+    src: url("fonts/PIZZADUDEPOINTERS.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
@@ -101,7 +105,11 @@ button{
     cursor: pointer;
 }
 
-p.symbol-button{
+button:disabled {
+    cursor:default;
+}
+
+p.symbol-button, button.symbol-button{
     font-family: HeydingsControlsRegular;
     font-size:2em;
     padding:0;
@@ -109,6 +117,20 @@ p.symbol-button{
     cursor:pointer;
     margin:0;
     margin-left:20px;
+}
+
+.header-button{
+    line-height: 2em;
+}
+
+p.pointer-button {
+    font-family: PizzaDudePointers;
+    /* font-size: 2em; */
+    padding: 0;
+
+    cursor: pointer;
+    margin: 20px 0;
+    /* margin-left: 20px; */
 }
 
 .header-with-buttons{

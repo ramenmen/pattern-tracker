@@ -3,18 +3,22 @@ class Pattern {
     rows;
     currentRow;
 
-    constructor(name,rows,currentRow = 1) {
+    constructor(name, rows, currentRow = 1) {
         this.name = name;
         this.rows = rows;
         this.currentRow = currentRow;
     }
 
-    addRow(rowNumber,row){
+    addRow(rowNumber, row) {
         this.rows.splice(rowNumber - 1, 0, row);
     }
 
+    deleteRow(rowNumber) {
+        this.rows.splice(rowNumber - 1, 1);
+    }
+
     getRow(rowNumber) {
-        return this.rows.length >= rowNumber ?this.rows[rowNumber - 1] :null;
+        return this.rows.length >= rowNumber ? this.rows[rowNumber - 1] : null;
     }
 }
 
@@ -22,7 +26,7 @@ class Row {
     desc;
     stCount;
 
-    constructor(desc,stCount=0){
+    constructor(desc, stCount = 0) {
         this.desc = desc;
         this.stCount = stCount;
     }
@@ -44,7 +48,7 @@ const addUI = document.querySelector('#add-mode');
 //set up elements
 stopButton.addEventListener('click', stopAddingRows);
 showStitchCountCheck.addEventListener("change", toggleStitchCountView);
-minusButton.addEventListener('click', ()=>{setRowCompleted(patternObject.currentRow - 1)});
+minusButton.addEventListener('click', decrementRowCompleted);
 plusButton.addEventListener('click', incrementRowCompleted);
 editButton.addEventListener('click', editPattern);
 saveButton.addEventListener('click', saveEditedPattern);
@@ -54,7 +58,6 @@ discardButton.addEventListener('click', revertPattern);
 let patternRowsDisplay;
 let patternNameElement;
 //li
-let patternRowElements = [];
 let addPatternButtonRow;
 let viewMode = 1;
 let editMode = 2;
@@ -62,14 +65,16 @@ let addMode = 3;
 let currentMode = viewMode;
 let elementToScroll;
 let previousAddedRow;
+let numberOfRows = 0;
 
 //set up variables for fetch
 const urlParams = new URL(location.href).searchParams;
 const patternId = urlParams.get('id');
-const patternUri = "http://localhost:8089/pattern";
-const savePatternUri = "http://localhost:8089/pattern-list";
+const patternUri = "/pattern";
+const savePatternUri = "/pattern-list";
 
 let patternObject;
+let updatedPatternObject;
 
 //dont scroll to previous position
 if ('scrollRestoration' in history) {
@@ -101,73 +106,16 @@ function convertServerDataToPatternObject(data) {
         const row = patternObject.rows[i];
         patternObject.rows[i] = Object.assign(new Row(), row);
     }
+    updatedPatternObject = patternObject;
+}
+
+function scrollTo() {
+    if (elementToScroll != null) {
+        elementToScroll.scrollIntoViewIfNeeded();
+    }
 }
 
 //adding html elements
-// function generatePatternDisplay() {
-//     if (patternNameElement) {
-//         patternNameElement.remove();
-//     }
-//     const myHead = document.createElement('h2');
-//     myHead.setAttribute("class", "pattern-name");
-//     myHead.textContent = patternObject.name;
-//     patternContainer.appendChild(myHead);
-//     patternNameElement = myHead;
-//     generatePatternRows();
-// }
-
-function generatePatternRows() {
-    if (patternRowsDisplay) {
-        patternRowsDisplay.remove();
-    }
-    const myList = document.createElement('ol');
-    myList.setAttribute("class", "pattern-rows-container");
-    patternContainer.appendChild(myList);
-
-    patternRowsDisplay = myList;
-    patternRowElements = [];
-    for (i=0;i<patternObject.rows.length;i++) {
-        let rowElement = createPatternViewRow(i + 1);
-        patternRowsDisplay.appendChild(rowElement);
-        patternRowElements.push(rowElement);
-        if (i + 1 === patternObject.currentRow) {
-            elementToScroll = rowElement;
-        }
-    }
-
-    const myPara = document.createElement('li');
-    myList.appendChild(myPara);
-    myPara.setAttribute("class", "pattern-row");
-    myPara.setAttribute("id", "add-pattern-row");
-
-    const myButton = document.createElement('button');
-    myButton.setAttribute('type','button');
-    myButton.setAttribute('class','row-button');
-    myButton.textContent = `+ Add New Row`;
-    myPara.appendChild(myButton);
-    myButton.addEventListener('click',addNewRow);
-    addPatternButtonRow = myPara;
-}
-
-function showPatternEditForm() {
-    const myHead = document.createElement('input');
-    myHead.type = "text";
-    myHead.setAttribute("class", "pattern-name");
-    myHead.value = patternObject.name;
-    patternNameElement.replaceWith(myHead);
-    patternNameElement = myHead;
-
-    for(i=0;i<patternRowElements.length;i++) {
-        const row = patternRowElements[i];
-        let myNewRow = createPatternEditRow(row.getAttribute("row-number"));
-        row.replaceWith(myNewRow);
-        patternRowElements[i] = myNewRow;  
-        myNewRow.addEventListener('keydown',(e) => {e.stopPropagation();if (e.key === 'Enter') {saveEditedPattern()}});
-    }
-
-    changeMode(editMode);
-}
-
 function showPatternViewForm() {
     if (patternNameElement) {
         patternNameElement.remove();
@@ -178,27 +126,109 @@ function showPatternViewForm() {
     patternContainer.appendChild(myHead);
     patternNameElement = myHead;
 
-    generatePatternRows();
+    generatePatternViewRows();
 
     changeMode(viewMode);
 }
 
+function generatePatternViewRows() {
+    if (patternRowsDisplay) {
+        patternRowsDisplay.remove();
+    }
+    const myList = document.createElement('ol');
+    myList.setAttribute("class", "pattern-rows-container");
+    patternContainer.appendChild(myList);
+
+    patternRowsDisplay = myList;
+    for (i = 0; i < patternObject.rows.length; i++) {
+        let rowElement = createPatternViewRow(i + 1);
+        patternRowsDisplay.appendChild(rowElement);
+        if (i + 1 === patternObject.currentRow) {
+            elementToScroll = rowElement;
+        }
+    }
+
+    numberOfRows = patternObject.rows.length;
+
+    const myPara = document.createElement('li');
+    myList.appendChild(myPara);
+    myPara.classList.add("pattern-row");
+    myPara.setAttribute("id", "add-pattern-row");
+
+    const myButton = document.createElement('button');
+    myButton.setAttribute('type', 'button');
+    myButton.setAttribute('class', 'row-button');
+    myButton.textContent = `+ Add New Row`;
+    myPara.appendChild(myButton);
+    myButton.addEventListener('click', addNewRow);
+    addPatternButtonRow = myPara;
+}
+
+function showPatternEditForm() {
+    if (patternNameElement) {
+        patternNameElement.remove();
+    }
+
+    const myHead = document.createElement('input');
+    myHead.type = "text";
+    myHead.setAttribute("class", "pattern-name");
+    myHead.value = patternObject.name;
+    patternContainer.appendChild(myHead);
+    patternNameElement = myHead;
+
+    generatePatternEditRows();
+
+    changeMode(editMode);
+}
+
+function generatePatternEditRows() {
+    if (patternRowsDisplay) {
+        patternRowsDisplay.remove();
+    }
+    const myList = document.createElement('ol');
+    myList.setAttribute("class", "pattern-rows-container");
+    patternContainer.appendChild(myList);
+
+    patternRowsDisplay = myList;
+    for (i = 0; i < patternObject.rows.length; i++) {
+        let rowElement = createPatternEditRow(i + 1);
+        patternRowsDisplay.appendChild(rowElement);
+        rowElement.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { saveEditedPattern() } });
+    }
+
+    numberOfRows = patternObject.rows.length;
+
+    const myPara = document.createElement('li');
+    myList.appendChild(myPara);
+    myPara.setAttribute("class", "pattern-row");
+    myPara.setAttribute("id", "add-pattern-row");
+
+    const myButton = document.createElement('button');
+    myButton.setAttribute('type', 'button');
+    myButton.setAttribute('class', 'row-button');
+    myButton.textContent = `+ Add New Row`;
+    myPara.appendChild(myButton);
+    myButton.addEventListener('click', addNewRowInEditMode);
+    addPatternButtonRow = myPara;
+}
+
 function createPatternViewRow(rowNumber) {
     const row = patternObject.getRow(rowNumber);
-    const value = row ?row.desc :'';
-    const stCount = row ?row.stCount:0;
+    const value = row ? row.desc : '';
+    const stCount = row ? row.stCount : 0;
     const myPara = document.createElement('li');
-    myPara.setAttribute("class", "pattern-row");
+    myPara.classList.add("pattern-row");
+    myPara.classList.add("pattern-view-row");
     myPara.setAttribute("row-number", rowNumber);
-    
+
     if (rowNumber < patternObject.currentRow) {
         myPara.classList.add('faded');
-    } 
+    }
 
     const myLabel = createPatternLabel(rowNumber);
-    myLabel.addEventListener('click',(e)=>{setRowCompleted(e.currentTarget.getAttribute('row-number'))});
+    myLabel.addEventListener('click', (e) => { setRowCompleted(e.currentTarget.getAttribute('row-number')) });
     myPara.appendChild(myLabel);
-    
+
     const myItem = document.createElement('p');
     myItem.textContent = value;
     myPara.appendChild(myItem);
@@ -214,16 +244,28 @@ function createPatternViewRow(rowNumber) {
 
 function createPatternEditRow(rowNumber) {
     const row = patternObject.getRow(rowNumber);
-    const value = row ?row.desc :'';
-    const stCount = row ?row.stCount:0;
+    const value = row ? row.desc : '';
+    const stCount = row ? row.stCount : 0;
     const myPara = document.createElement('li');
-    myPara.setAttribute("class", "pattern-row");
-    myPara.setAttribute("row-number", rowNumber);
+    myPara.classList.add("pattern-row");
+    myPara.classList.add("pattern-input-row");
+
+    const myMoveUpBtn = document.createElement('p');
+    myMoveUpBtn.textContent = 'K';
+    myPara.appendChild(myMoveUpBtn);
+    myMoveUpBtn.classList.add("pointer-button");
+    myMoveUpBtn.addEventListener('click', moveRowUp);
+
+    const myMoveDownBtn = document.createElement('p');
+    myMoveDownBtn.textContent = 'O';
+    myPara.appendChild(myMoveDownBtn);
+    myMoveDownBtn.classList.add("pointer-button");
+    myMoveDownBtn.addEventListener('click', moveRowDown);
 
     const myLabel = createPatternLabel(rowNumber);
     myLabel.disabled = true;
     myPara.appendChild(myLabel);
-    
+
     const myItem = document.createElement('input');
     myItem.type = "text";
     myItem.value = value;
@@ -241,66 +283,50 @@ function createPatternEditRow(rowNumber) {
     myPara.appendChild(myDeleteBtn);
     myDeleteBtn.classList.add("symbol-button");
     myDeleteBtn.classList.add("delete-pattern-button");
-    myDeleteBtn.setAttribute('row-number', rowNumber);
     myDeleteBtn.addEventListener('click', deleteRow);
+
+    return myPara;
+}
+
+function createPatternAddRow(rowNumber) {
+    const row = patternObject.getRow(rowNumber);
+    const value = row ? row.desc : '';
+    const stCount = row ? row.stCount : 0;
+    const myPara = document.createElement('li');
+    myPara.classList.add("pattern-row");
+    myPara.classList.add("pattern-input-row");
+    //this is ONLY used for add row and not used during edit mode.
+    myPara.setAttribute("row-number", rowNumber);
+
+    const myLabel = createPatternLabel(rowNumber);
+    myLabel.disabled = true;
+    myPara.appendChild(myLabel);
+
+    const myItem = document.createElement('input');
+    myItem.type = "text";
+    myItem.value = value;
+    myPara.appendChild(myItem);
+    myItem.setAttribute("class", "pattern-row-content");
+
+    const myStCount = document.createElement('input');
+    myStCount.type = 'text';
+    myStCount.value = stCount;
+    myPara.appendChild(myStCount);
+    myStCount.setAttribute("class", "pattern-row-stitch-count");
 
     return myPara;
 }
 
 function createPatternLabel(rowNumber) {
     const myLabel = document.createElement('button');
-    myLabel.setAttribute("row-number", rowNumber);
     myLabel.classList.add('rowLabel');
+    myLabel.setAttribute("row-number", rowNumber);
     myLabel.textContent = `Row ${rowNumber}`;
     return myLabel;
 }
 
-//button functions
-function editPattern() {
-    showPatternEditForm();
-}
-
-function deleteRow(e){
-    let rowNumber = e.target.getAttribute('row-number');
-    patternObject.rows.splice(rowNumber, 1)
-    
-    //TODO: regen pattern rows
-    //but also then how do i go back ?
-
-    // let requestUri = `${patternUri}?id=${id}`;
-    // fetch(requestUri, {
-    //     method: 'DELETE',
-    //     credentials: "include",
-    //     headers: {
-    //         // 'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     },
-    // })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         //it will return the success story
-    //         if (data.success) {
-    //             const row = patternRowElements[rowNumber];
-    //             row.remove();
-    //             patternRowElements[rowNumber] = null;
-    //             patternList[rowNumber] = null;
-    //         }
-    //     })
-}
-
-function saveEditedPattern() {
-    patternObject.name = patternNameElement.value;
-    for (i=0;i<patternRowElements.length;i++) {
-        let rowInput = patternRowElements[i].querySelector("input.pattern-row-content").value;
-        patternObject.rows[i].desc = rowInput;
-        let stInput = patternRowElements[i].querySelector("input.pattern-row-stitch-count").value;
-        patternObject.rows[i].stCount = stInput;
-    }
-    savePatternToStorage();
-}
-
-//assumes patternObject contains the version i WANT to save
-function savePatternToStorage() {
+//called in all modes
+function savePatternToStorage(refreshView = true) {
     let requestUri = `${savePatternUri}?id=${patternId}`;
     fetch(requestUri, {
         method: 'POST',
@@ -309,21 +335,19 @@ function savePatternToStorage() {
             // 'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(patternObject)
+        body: JSON.stringify(updatedPatternObject)
     })
         .then((response) => response.json())
         .then((data) => {
             //it will return the edited pattern
             convertServerDataToPatternObject(data);
-            showPatternViewForm();
+            if (refreshView) {
+                showPatternViewForm();
+            }
         })
 }
 
-function revertPattern() {
-    showPatternViewForm();
-}
-
-function changeMode(newMode){
+function changeMode(newMode) {
     currentMode = newMode;
     editUI.hidden = true;
     readUI.hidden = true;
@@ -341,38 +365,17 @@ function changeMode(newMode){
     }
 }
 
-function toggleEditMode(isEditMode) {
-    editUI.hidden = !isEditMode;
-    readUI.hidden = isEditMode;
-}
-
-function addNewRow() {
-    if (previousAddedRow && currentMode===addMode) {
-        saveNewRow(previousAddedRow);
-    }
-    if (currentMode===viewMode){
-        changeMode(addMode);
-    }
-    
-    let newRow = createPatternEditRow(patternObject.rows.length + 1);
-    previousAddedRow = newRow;
-    newRow.addEventListener('keydown',(e) => {e.stopPropagation();if (e.key === 'Enter') {addNewRow()}});
-    patternRowsDisplay.insertBefore(newRow, addPatternButtonRow);
-    window.scrollBy(0, newRow.offsetHeight);
-    patternRowElements.push(newRow);
-    newRow.querySelector("input.pattern-row-content").focus();
-}
-
-function saveNewRow(row) {
-    let rowNo = row.getAttribute('row-number');
-    let rowInput = row.querySelector('input.pattern-row-content').value;
-    let stInput = row.querySelector("input.pattern-row-stitch-count").value;
-    patternObject.addRow(rowNo, new Row(rowInput, stInput));
-    savePatternToStorage();
+//called in view mode
+function editPattern() {
+    showPatternEditForm();
 }
 
 function incrementRowCompleted() {
     setRowCompleted(patternObject.currentRow);
+}
+
+function decrementRowCompleted() {
+    setRowCompleted(patternObject.currentRow - 1);
 }
 
 function setRowCompleted(rowNumber) {
@@ -381,24 +384,6 @@ function setRowCompleted(rowNumber) {
     }
     patternObject.currentRow = Math.min(Math.max(parseInt(rowNumber) + 1, 1), patternObject.rows.length + 1);
     savePatternToStorage();
-} 
-
-function stopAddingRows() {
-    let rowInp = previousAddedRow.querySelector('.pattern-row-content');
-    if (rowInp.tagName === 'INPUT' && rowInp.value!='') {
-        saveNewRow(previousAddedRow);
-    } else {
-        patternRowElements.pop();
-        previousAddedRow.remove();
-        changeMode(viewMode);
-    }
-    previousAddedRow = null;
-}
-
-function scrollTo() {
-    if (elementToScroll != null) {
-        elementToScroll.scrollIntoViewIfNeeded();
-    }
 }
 
 function toggleStitchCountView() {
@@ -413,5 +398,117 @@ function toggleStitchCountView() {
             p.classList.add('hidden');
         }
     }
-
 }
+
+//called in edit mode
+function deleteRow(e) {
+    e.target.parentElement.remove();
+    rewriteRowLabels();
+}
+
+function moveRowUp(e) {
+    const rows = patternContainer.querySelectorAll('.pattern-input-row');
+    const myRow = e.target.parentElement;
+    for (i = 0; i < rows.length; i++) {
+        if (rows[i] == myRow && i > 0) {
+            patternRowsDisplay.insertBefore(myRow, rows[i-1]);
+            break;
+        }
+    }
+    rewriteRowLabels();
+}
+
+function moveRowDown(e) {
+    const rows = patternContainer.querySelectorAll('.pattern-input-row');
+    const myRow = e.target.parentElement;
+    for (i = 0; i < rows.length; i++) {
+        if (rows[i] == myRow && i < rows.length - 1) {
+            patternRowsDisplay.insertBefore(rows[i + 1], myRow);
+            break;
+        }
+    }
+    rewriteRowLabels();
+}
+
+function rewriteRowLabels() {
+    const labels = patternContainer.querySelectorAll('.rowLabel');
+    for (i = 0; i < labels.length; i++) {
+        let myLabel = labels[i];
+        myLabel.setAttribute("row-number", i + 1);
+        myLabel.textContent = `Row ${i + 1}`;
+    }
+}
+
+function revertPattern() {
+    showPatternViewForm();
+}
+
+function saveEditedPattern() {
+    updatedPatternObject.name = patternContainer.querySelector('.pattern-name').value;
+
+    let newRows = [];
+    let rowElements = patternContainer.querySelectorAll('.pattern-input-row');
+    for (i = 0; i < rowElements.length; i++) {
+        let rowInput = rowElements[i].querySelector("input.pattern-row-content").value;
+        let stInput = rowElements[i].querySelector("input.pattern-row-stitch-count").value;
+        newRows[i] = new Row(rowInput, stInput);
+    }
+
+    updatedPatternObject.rows = newRows;
+    savePatternToStorage();
+}
+
+function addNewRow() {
+    if (previousAddedRow && currentMode === addMode) {
+        savePreviousAddedRow(previousAddedRow);
+    }
+    if (currentMode === viewMode) {
+        changeMode(addMode);
+    }
+
+    numberOfRows++;
+    let newRow = createPatternAddRow(numberOfRows);
+    previousAddedRow = newRow;
+    newRow.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { addNewRow() } });
+    patternRowsDisplay.insertBefore(newRow, addPatternButtonRow);
+    window.scrollBy(0, newRow.offsetHeight);
+    newRow.querySelector("input.pattern-row-content").focus();
+}
+
+function addNewRowInEditMode() {
+    numberOfRows++;
+    let newRow = createPatternEditRow(numberOfRows);
+    previousAddedRow = newRow;
+    newRow.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { saveEditedPattern() } });
+    patternRowsDisplay.insertBefore(newRow, addPatternButtonRow);
+    window.scrollBy(0, newRow.offsetHeight);
+    newRow.querySelector("input.pattern-row-content").focus();
+}
+
+//only called in add mode
+function savePreviousAddedRow(row) {
+    let rowNo = row.getAttribute('row-number');
+    let rowInput = row.querySelector('input.pattern-row-content').value;
+    let stInput = row.querySelector("input.pattern-row-stitch-count").value;
+    updatedPatternObject.addRow(rowNo, new Row(rowInput, stInput));
+    savePatternToStorage(false);
+
+    //replace input with view
+    let myNewRow = createPatternViewRow(rowNo);
+    row.replaceWith(myNewRow);
+
+    previousAddedRow = null;
+}
+
+function stopAddingRows() {
+    let rowInput = previousAddedRow.querySelector('input.pattern-row-content').value;
+    if (rowInput.trim() != '') {
+        savePreviousAddedRow(previousAddedRow);
+    } else {
+        numberOfRows--;
+        previousAddedRow.remove();
+    }
+    changeMode(viewMode);
+    previousAddedRow = null;
+}
+

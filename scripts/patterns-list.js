@@ -1,7 +1,9 @@
-const patternUri = "http://localhost:8089/pattern-list";
+const patternUri = "/pattern-list";
 const patternContainer = document.querySelector('.pattern-container');
 const editBtn = document.querySelector('#edit-button');
+const uploadBtn = document.querySelector('#upload-button');
 editBtn.addEventListener('click',toggleDeleteBtns);
+uploadBtn.addEventListener('click', () => { location.replace('/upload.html'); });
 let showDeleteBtn = false;
 let patternRowsDisplay;
 let patternRowElements;
@@ -25,10 +27,6 @@ fetch(patternUri, {
     patternList = data;
     generatePatternRows();
 })
-
-function getPatternJSON (patternId){
-    return localStorage.getItem(`${storagePatternPrefix}${patternId}`);
-}
 
 function generatePatternRows() {
     if (patternRowsDisplay) {
@@ -232,4 +230,3 @@ function toggleDeleteBtns(){
         }
     }
 }
-

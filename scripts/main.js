@@ -70,8 +70,10 @@ let numberOfRows = 0;
 //set up variables for fetch
 const urlParams = new URL(location.href).searchParams;
 const patternId = urlParams.get('id');
-const patternUri = "/pattern";
-const savePatternUri = "/pattern-list";
+//const serverUrl = 'http://localhost:8080';
+const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+const patternUri = `${serverUrl}/pattern`;
+const savePatternUri = `${serverUrl}/pattern-list`;
 
 let patternObject;
 let updatedPatternObject;

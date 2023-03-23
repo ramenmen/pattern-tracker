@@ -2,6 +2,10 @@ const fileUpload = document.querySelector('#pattern-file');
 const uploadBtn = document.querySelector('#upload-button');
 uploadBtn.addEventListener('click', uploadFile);
 
+//const serverUrl = 'http://localhost:8080';
+const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+const uploadUri = `${serverUrl}/upload-file`;
+
 function uploadFile() {
     const filePath = fileUpload.value.split('\\');
     const fileName = filePath[filePath.length - 1].split('.')[0];
@@ -18,7 +22,7 @@ function uploadFile() {
 }
 
 function sendUploadFileRequest(fileName,requestBody){
-    fetch(`/upload-file?name=${fileName}`, {
+    fetch(`uploadUri?name=${fileName}`, {
         method: "POST",
         body: requestBody
     })

@@ -6,6 +6,9 @@ let isRecaptchaValidated = false;
 
 const errorMsg = document.querySelector('#error-message');
 
+//const serverUrl = 'http://localhost:8080';
+const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+
 function displayErrorMessage(message = '', hide = false) {
     errorMsg.textContent = message;
     errorMsg.style.display = hide
@@ -33,7 +36,7 @@ if (submitBtn) {
 }
 
 function registerUser() {
-    fetch('/register', {
+    fetch(`${serverUrl}/register`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -58,7 +61,7 @@ function loginUser() {
     if (!isRecaptchaValidated) {
         displayErrorMessage('Please fill in captcha!');
     } else {
-        fetch('/login', {
+        fetch(`${serverUrl}/login`, {
             method: 'POST',
             credentials: "include",
             headers: {

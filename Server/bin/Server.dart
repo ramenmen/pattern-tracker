@@ -29,6 +29,14 @@ void main() async {
   server.listen((HttpRequest request) async {
     var response = request.response;
 
+    response.headers
+        .add('Access-Control-Allow-Origin', 'https://ramenmen.github.io');
+    response.headers
+        .add('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE');
+    response.headers.add('Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept');
+    response.headers.add('Access-Control-Allow-Credentials', 'true');
+
     try {
       switch (request.method) {
         case 'POST':
@@ -130,7 +138,7 @@ _handlePost(HttpRequest request) async {
   } else if (path == '/pattern-list') {
     var isLoggedIn = await _isLoggedIn(request);
     if (!isLoggedIn) {
-      response.write(json.encode({'redirect': '/login.html'}));
+      response.write(json.encode({'redirect': 'login.html'}));
       await request.response.close();
       return;
     }
@@ -172,7 +180,7 @@ _handlePost(HttpRequest request) async {
   } else if (path == '/upload-file') {
     var isLoggedIn = await _isLoggedIn(request);
     if (!isLoggedIn) {
-      response.write(json.encode({'redirect': '/login.html'}));
+      response.write(json.encode({'redirect': 'login.html'}));
       await request.response.close();
       return;
     }
@@ -200,7 +208,7 @@ _handlePost(HttpRequest request) async {
     if (result.document != null) {
       var idObject = result.document!['_id'];
       var id = (idObject! as ObjectId).id.hexString;
-      response.write(json.encode({'redirect': '/pattern.html?id=$id'}));
+      response.write(json.encode({'redirect': 'pattern.html?id=$id'}));
     }
     await response.close();
     return;
@@ -214,7 +222,8 @@ _handleDelete(HttpRequest request) async {
   if (path == '/pattern-list') {
     var isLoggedIn = await _isLoggedIn(request);
     if (!isLoggedIn) {
-      await request.response.redirect(Uri.parse('/login.html'));
+      response.write(json.encode({'redirect': 'login.html'}));
+      await response.close();
       return;
     }
 
@@ -249,16 +258,18 @@ var noLogin = ['/login.html', '/register.html'];
 _handleGet(HttpRequest request) async {
   var path = request.uri.path;
   path = path == '/' ? '/home' : path;
-
+  var response = request.response;
   //basic checks
   var isLoggedIn = await _isLoggedIn(request);
   var username = await _getUserName(request);
   if (isLoggedIn && (noLogin.contains(path))) {
-    await request.response.redirect(Uri.parse('/home'));
+    response.write(json.encode({'redirect': 'index.html'}));
+    await response.close();
     return;
   }
   if (!isLoggedIn && (requiresLogin.contains(path))) {
-    await request.response.redirect(Uri.parse('/login.html'));
+    response.write(json.encode({'redirect': 'login.html'}));
+    await response.close();
     return;
   }
 
@@ -267,10 +278,12 @@ _handleGet(HttpRequest request) async {
     if (isLoggedIn) {
       await _logOut(request);
     }
-    await request.response.redirect(Uri.parse('/login.html'));
+    response.write(json.encode({'redirect': 'login.html'}));
+    await response.close();
     return;
   } else if (path == '/home') {
-    await request.response.redirect(Uri.parse('/patterns-list.html'));
+    response.write(json.encode({'redirect': 'patterns-list.html'}));
+    await response.close();
     return;
   }
 
@@ -288,7 +301,8 @@ _handleGet(HttpRequest request) async {
   } else if (path == '/pattern') {
     var id = request.uri.queryParameters['id'];
     if (id == null) {
-      await request.response.redirect(Uri.parse('/patterns-list.html'));
+      response.write(json.encode({'redirect': 'patterns-list.html'}));
+      await response.close();
       return;
     }
     var pattern =
@@ -382,6 +396,7 @@ _logOut(HttpRequest request) async {
 }
 
 _sendNotFound(HttpRequest request) async {
-  // request.response.statusCode = HttpStatus.notFound;
-  await request.response.redirect(Uri.parse('/not-found.html'));
+  request.response.statusCode = HttpStatus.notFound;
+  request.response.write(json.encode({'redirect': 'not-found.html'}));
+  await request.response.close();
 }

@@ -5,7 +5,7 @@ const patternContainer = document.querySelector('.pattern-container');
 const editBtn = document.querySelector('#edit-button');
 const uploadBtn = document.querySelector('#upload-button');
 editBtn.addEventListener('click',toggleDeleteBtns);
-uploadBtn.addEventListener('click', () => { redirect('/upload.html'); });
+uploadBtn.addEventListener('click', () => { redirect('upload.html'); });
 let showDeleteBtn = false;
 let patternRowsDisplay;
 let patternRowElements;

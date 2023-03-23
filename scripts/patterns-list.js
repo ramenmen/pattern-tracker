@@ -1,5 +1,5 @@
-//const serverUrl = 'http://localhost:8080';
-const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+const serverUrl = 'http://localhost:8080';
+//const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
 const patternUri = `${serverUrl}/pattern-list`;
 const patternContainer = document.querySelector('.pattern-container');
 const editBtn = document.querySelector('#edit-button');

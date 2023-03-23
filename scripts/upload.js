@@ -2,8 +2,8 @@ const fileUpload = document.querySelector('#pattern-file');
 const uploadBtn = document.querySelector('#upload-button');
 uploadBtn.addEventListener('click', uploadFile);
 
-//const serverUrl = 'http://localhost:8080';
-const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+const serverUrl = 'http://localhost:8080';
+//const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
 const uploadUri = `${serverUrl}/upload-file`;
 
 function uploadFile() {

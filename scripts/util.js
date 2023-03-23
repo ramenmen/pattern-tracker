@@ -1,11 +1,11 @@
+const serverUrl = 'http://localhost:8080';
+//const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
+
 function redirect(path) {
     if (path) {
         location.replace(path);//`/pattern-tracker${path}`);
     }
 }
-
-const serverUrl = 'http://localhost:8080';
-//const serverUrl = 'https://server-5acaqpvhyq-as.a.run.app';
 
 function logout() {
     fetch(`${serverUrl}/logout`, {

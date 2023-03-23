@@ -26,8 +26,12 @@ fetch(patternUri, {
 })
 .then((response) => response.json())
 .then((data) => {
-    patternList = data;
-    generatePatternRows();
+    if (data.redirect != null) {
+        redirect(data.redirect);
+    } else {
+        patternList = data;
+        generatePatternRows();
+    }
 })
 
 function generatePatternRows() {
@@ -134,6 +138,9 @@ function deletePattern(e) {
     })
         .then((response) => response.json())
         .then((data) => {
+            if (data.redirect != null) {
+                redirect(data.redirect);
+            } else
             //it will return the success story
             if (data.success) {
                 const row = patternRowElements[rowNumber];
@@ -194,12 +201,16 @@ function savePattern(e) {
         })
             .then((response) => response.json())
             .then((data) => {
-                //it will return the created pattern
-                patternList[rowNumber] = data;
-                const row = patternRowElements[rowNumber];
-                let myNewRow = createPatternViewRow(rowNumber);
-                row.replaceWith(myNewRow);
-                patternRowElements[rowNumber] = myNewRow;
+                if (data.redirect != null) {
+                    redirect(data.redirect);
+                } else {
+                    //it will return the created pattern
+                    patternList[rowNumber] = data;
+                    const row = patternRowElements[rowNumber];
+                    let myNewRow = createPatternViewRow(rowNumber);
+                    row.replaceWith(myNewRow);
+                    patternRowElements[rowNumber] = myNewRow;
+                }
             })
     } else {
         //idk some error

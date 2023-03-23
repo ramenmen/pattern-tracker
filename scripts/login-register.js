@@ -76,7 +76,7 @@ function loginUser() {
         .then((response) => response.json())
         .then((data) => {
             if (data.error == null) {
-                redirect('/home');
+                redirect('/index.html?logged-in=true');
             } else {
                 displayErrorMessage(data.error);
             }

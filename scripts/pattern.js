@@ -91,14 +91,18 @@ fetch(`${patternUri}?id=${patternId}`, {
 })
     .then((response) => response.json())
     .then((data) => {
-        convertServerDataToPatternObject(data);
-        showPatternViewForm();
-        if (urlParams.get('edit') == 'true') {
-            changeMode(editMode);
+        if (data.redirect != null) {
+            redirect(data.redirect);
         } else {
-            changeMode(viewMode);
+            convertServerDataToPatternObject(data);
+            showPatternViewForm();
+            if (urlParams.get('edit') == 'true') {
+                changeMode(editMode);
+            } else {
+                changeMode(viewMode);
+            }
+            scrollTo();
         }
-        scrollTo();
     })
 
 
@@ -341,10 +345,14 @@ function savePatternToStorage(refreshView = true) {
     })
         .then((response) => response.json())
         .then((data) => {
-            //it will return the edited pattern
-            convertServerDataToPatternObject(data);
-            if (refreshView) {
-                showPatternViewForm();
+            if (data.redirect != null) {
+                redirect(data.redirect);
+            } else {
+                //it will return the edited pattern
+                convertServerDataToPatternObject(data);
+                if (refreshView) {
+                    showPatternViewForm();
+                }
             }
         })
 }

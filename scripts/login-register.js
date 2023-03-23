@@ -83,9 +83,3 @@ function loginUser() {
         })
     }
 }
-
-function redirect(path) {
-    if (path) {
-        location.replace(path);
-    }
-}

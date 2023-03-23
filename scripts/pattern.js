@@ -521,4 +521,3 @@ function stopAddingRows() {
     changeMode(viewMode);
     previousAddedRow = null;
 }
-

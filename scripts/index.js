@@ -6,9 +6,3 @@ if (isLoggedIn != 'true') {
 }
 
 redirect('/pattern-list.html');
-
-function redirect(path) {
-    if (path) {
-        location.replace(path);
-    }
-}

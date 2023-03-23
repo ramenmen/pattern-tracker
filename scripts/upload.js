@@ -35,9 +35,3 @@ function sendUploadFileRequest(fileName,requestBody){
         }
     });
 }
-
-function redirect(path) {
-    if (path) {
-        location.replace(path);
-    }
-}

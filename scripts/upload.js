@@ -27,7 +27,7 @@ function sendUploadFileRequest(fileName,requestBody){
     .then((response) => response.json())
     .then((data) => {
         if (data.redirect != null) {
-            redirect(data.redirect);
+            goTo(data.redirect);
         } else {
            // displayErrorMessage(data.error);
         }

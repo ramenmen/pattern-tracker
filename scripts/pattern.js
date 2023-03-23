@@ -90,7 +90,7 @@ fetch(`${patternUri}?id=${patternId}`, {
     .then((response) => response.json())
     .then((data) => {
         if (data.redirect != null) {
-            redirect(data.redirect);
+            goTo(data.redirect);
         } else {
             convertServerDataToPatternObject(data);
             showPatternViewForm();
@@ -344,7 +344,7 @@ function savePatternToStorage(refreshView = true) {
         .then((response) => response.json())
         .then((data) => {
             if (data.redirect != null) {
-                redirect(data.redirect);
+                goTo(data.redirect);
             } else {
                 //it will return the edited pattern
                 convertServerDataToPatternObject(data);

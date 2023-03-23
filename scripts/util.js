@@ -7,6 +7,12 @@ function redirect(path) {
     }
 }
 
+function goTo(path) {
+    if (path) {
+        location.href = path;
+    }
+}
+
 function logout() {
     fetch(`${serverUrl}/logout`, {
         method: 'GET',

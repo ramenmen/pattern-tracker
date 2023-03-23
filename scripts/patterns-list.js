@@ -3,7 +3,7 @@ const patternContainer = document.querySelector('.pattern-container');
 const editBtn = document.querySelector('#edit-button');
 const uploadBtn = document.querySelector('#upload-button');
 editBtn.addEventListener('click',toggleDeleteBtns);
-uploadBtn.addEventListener('click', () => { redirect('upload.html'); });
+uploadBtn.addEventListener('click', () => { goTo('upload.html'); });
 let showDeleteBtn = false;
 let patternRowsDisplay;
 let patternRowElements;
@@ -25,7 +25,7 @@ fetch(patternUri, {
 .then((response) => response.json())
 .then((data) => {
     if (data.redirect != null) {
-        redirect(data.redirect);
+        goTo(data.redirect);
     } else {
         patternList = data;
         generatePatternRows();
@@ -137,7 +137,7 @@ function deletePattern(e) {
         .then((response) => response.json())
         .then((data) => {
             if (data.redirect != null) {
-                redirect(data.redirect);
+                goTo(data.redirect);
             } else
             //it will return the success story
             if (data.success) {
@@ -200,7 +200,7 @@ function savePattern(e) {
             .then((response) => response.json())
             .then((data) => {
                 if (data.redirect != null) {
-                    redirect(data.redirect);
+                    goTo(data.redirect);
                 } else {
                     //it will return the created pattern
                     patternList[rowNumber] = data;

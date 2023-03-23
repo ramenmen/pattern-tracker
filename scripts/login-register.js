@@ -50,7 +50,7 @@ function registerUser() {
     .then((response)=>response.json())
     .then((data) => {
         if (data.error == null) {
-            redirect('/login.html');
+            redirect('login.html');
         } else {
             displayErrorMessage(data.error);
         }
@@ -76,7 +76,7 @@ function loginUser() {
         .then((response) => response.json())
         .then((data) => {
             if (data.error == null) {
-                redirect('/index.html?logged-in=true');
+                redirect('index.html?logged-in=true');
             } else {
                 displayErrorMessage(data.error);
             }

@@ -5,4 +5,4 @@ if (isLoggedIn != 'true') {
     //ask server if you are logged in?
 }
 
-redirect('/pattern-list.html');
+redirect('pattern-list.html');

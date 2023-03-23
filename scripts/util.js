@@ -9,7 +9,7 @@ function redirect(path) {
 
 function logout() {
     fetch(`${serverUrl}/logout`, {
-        method: 'POST',
+        method: 'GET',
         credentials: "include",
         headers: {
         }

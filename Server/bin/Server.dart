@@ -127,8 +127,9 @@ _handlePost(HttpRequest request) async {
         };
         await userSessions.insertOne(session);
 
-        response.cookies.add(Cookie(
-            'userToken', base64.encode(utf8.encode(json.encode(session)))));
+        var cookie = base64.encode(utf8.encode(json.encode(session)));
+        response.headers
+            .add('Set-Cookie', 'userToken=$cookie; SameSite=None; Secure');
         response.write(json.encode({'success': true}));
         await request.response.close();
       } else {

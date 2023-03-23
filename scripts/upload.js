@@ -20,7 +20,7 @@ function uploadFile() {
 }
 
 function sendUploadFileRequest(fileName,requestBody){
-    fetch(`uploadUri?name=${fileName}`, {
+    fetch(`${uploadUri}?name=${fileName}`, {
         method: "POST",
         body: requestBody
     })

@@ -48,6 +48,10 @@ void main() async {
         case 'DELETE':
           await _handleDelete(request);
           break;
+        case 'OPTIONS':
+          response.statusCode = HttpStatus.ok;
+          await request.response.close();
+          break;
         default:
           _sendNotFound(request);
           break;

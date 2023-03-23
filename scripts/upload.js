@@ -22,6 +22,7 @@ function uploadFile() {
 function sendUploadFileRequest(fileName,requestBody){
     fetch(`${uploadUri}?name=${fileName}`, {
         method: "POST",
+        credentials: 'include',
         body: requestBody
     })
     .then((response) => response.json())
